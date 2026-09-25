@@ -1,0 +1,28 @@
+# dependencies / bulk
+node_modules/
+.opencode/node_modules/
+
+# account tokens — never commit
+antigravity-accounts.json
+opencode-accounts.json
+gemini-accounts.json
+auth.json
+antigravity-signature-cache.json
+*.tmp
+
+# local backups
+*.bak
+*.bak-*
+
+# runtime data / logs
+data/*.db*
+data/log/
+cyberstrike/state/
+cyberstrike/memory/
+
+# windows artifact
+nul
+
+# OS noise
+.DS_Store
+Thumbs.db

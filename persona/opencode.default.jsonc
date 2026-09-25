@@ -1,0 +1,11 @@
+// Default persona overlay — SINGLE SOURCE OF TRUTH.
+//
+// opencode.ps1 copies this over ~/.config/opencode/opencode.jsonc when the
+// default persona is chosen, so a default session is stock opencode: no hacker
+// agent, no persona instructions, no persona model override. The launcher also
+// runs --pure and sets OPENCODE_DISABLE_EXTERNAL_SKILLS / OPENCODE_DISABLE_CLAUDE_CODE
+// so no external plugin, skill or CLAUDE.md reaches the session either.
+{
+  "$schema": "https://opencode.ai/config.json",
+  "snapshot": false
+}

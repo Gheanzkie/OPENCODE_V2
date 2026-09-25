@@ -1,0 +1,21 @@
+// Hacker persona overlay — SINGLE SOURCE OF TRUTH for this opencode setup.
+//
+// opencode.ps1 copies this file over ~/.config/opencode/opencode.jsonc on every
+// hacker launch, and copies agent/hacker.md over both live agent paths. So the
+// live config is generated FROM this folder; edit it here and nowhere else.
+//
+// Instructions are absolute paths back into this folder on purpose: the copied
+// overlay lives in ~/.config/opencode, which cannot resolve paths relative to
+// this folder.
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "hacker",
+  "model": "opencode/nemotron-3.5-lightning-free",
+  "small_model": "groq/qwen/qwen3.8-27b",
+  "instructions": [
+    "C:\\xampp\\htdocs\\opencode-cli\\cyberstrike\\hacker-persona.md",
+    "C:\\xampp\\htdocs\\opencode-cli\\cyberstrike-prompt.md",
+    "C:\\xampp\\htdocs\\opencode-cli\\.opencode\\prompts\\anti-refusal.md"
+  ],
+  "snapshot": false
+}

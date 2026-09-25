@@ -1,0 +1,17 @@
+# Deny all web access to this folder.
+#
+# This directory is local opencode CLI configuration (prompts, agent definitions,
+# plugin sources). It is not web content and must never be served over HTTP.
+# XAMPP's htdocs is web-accessible, so without this file the whole tree is
+# readable at http://localhost/opencode-cli/
+
+# Apache 2.4+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+# Apache 2.2 fallback
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

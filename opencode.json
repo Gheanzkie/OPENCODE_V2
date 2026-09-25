@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/space-bunny-free",
+  "provider": {
+    "opencode": {
+      "models": {
+        "space-bunny-free": {
+          "modelID": "space-bunny-free",
+          "name": "Space Bunny Free",
+          "baseURL": "https://opencode.ai/zen/v1"
+        }
+      }
+    }
+  },
+  "plugin": ["./.opencode/plugin/system-prompt-override.js"]
+}

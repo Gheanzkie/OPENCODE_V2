@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@ojpalenzuela/opencode-copilot-multi-auth": "^0.1.1",
+    "@opencode-ai/plugin": "1.18.27"
+  }
+}

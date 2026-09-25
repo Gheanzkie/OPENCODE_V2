@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@cyberstrike-io/plugin": "1.1.16",
+    "@mimo-ai/plugin": "0.1.13"
+  }
+}
