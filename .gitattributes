@@ -1,0 +1,4 @@
+# The system-prompt-override plugin is vendored byte-for-byte from the published
+# npm artifact. core.autocrlf=true would rewrite it to CRLF on checkout, which
+# breaks its integrity pin and its sha256 drift check. Keep this one file LF.
+.opencode/plugin/system-prompt-override.js text eol=lf

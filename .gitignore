@@ -19,6 +19,8 @@ data/*.db*
 data/log/
 cyberstrike/state/
 cyberstrike/memory/
+# written by the system-prompt-override plugin when a rule fails or a hook throws
+.opencode/system-prompt-override.log
 
 # windows artifact
 nul
@@ -30,3 +32,7 @@ Thumbs.db
 # REAL cyberstrike.json with live API keys — never commit.
 # Committed template lives at cyberstrike/cyberstrike.example.json
 cyberstrike/cyberstrike.json
+
+# Standalone opencode (opencode.ai/zen) key, referenced from cyberstrike.json as
+# {file:./opencode-key.txt}. Committed template: cyberstrike/opencode-key.example.txt
+cyberstrike/opencode-key.txt

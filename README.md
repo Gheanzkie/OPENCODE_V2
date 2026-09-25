@@ -32,6 +32,9 @@ every launch.
 | `agent\hacker.md`                 | the hacker agent prompt                          |
 | `cyberstrike\hacker-persona.md`   | persona instructions                             |
 | `cyberstrike-prompt.md`           | operator instructions                            |
+| `cyberstrike\cyberstrike.json`    | live CyberStrike config: 15 providers, models, plugins (gitignored) |
+| `cyberstrike\opencode-key.txt`    | YOUR opencode.ai/zen API key, alone in its own file (gitignored) |
+| `cyberstrike\*.example.*`         | committed redacted templates for the two live files above |
 | `.opencode\`                      | project config: prompts, plugins, system-prompts.json, skills |
 | `plugin\`, `skills\`              | plugin and skill sources                         |
 
@@ -44,10 +47,26 @@ every launch.
     opencode debug config             # resolved configuration
     opencode debug agent hacker       # resolved agent prompt
 
+## The opencode API key lives in its own file
+
+The `opencode` provider key is NOT stored inline in `cyberstrike.json`. It sits in a
+one-line file next to it, and the config points at it with CyberStrike's `{file:}`
+template (resolved by `packages/cyberstrike/src/config/config.ts`, path relative to
+the config file, contents trimmed):
+
+    ~\.config\cyberstrike\opencode-key.txt          <- sk-...  (real key, gitignored)
+    ~\.config\cyberstrike\cyberstrike.json         "apiKey": "{file:./opencode-key.txt}"
+
+Rotate the key by editing that one file — `cyberstrike.json` never has to change.
+Committed template: `cyberstrike\opencode-key.example.txt`.
+
+The other 14 providers keep their keys inline in `cyberstrike.json` (that file is
+gitignored; only the redacted `cyberstrike.example.json` is committed).
+
 ## Not committed / not in git
 
 - Account token stores (`opencode-accounts.json`, `antigravity-accounts.json`, `auth.json`)
-- Provider `apiKey` values
+- Provider `apiKey` values: `cyberstrike/cyberstrike.json` and `cyberstrike/opencode-key.txt`
 - `node_modules`, lockfiles, local database
 
 ## Rollback

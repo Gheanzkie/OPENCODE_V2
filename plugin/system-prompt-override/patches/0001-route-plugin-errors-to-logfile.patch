@@ -1,0 +1,32 @@
+--- a/dist/index.js (opencode-sysprompt-override@0.2.5)
++++ b/.opencode/plugin/system-prompt-override.js
+@@ -211,8 +211,9 @@
+       code,
+       message
+     };
+-    writeLog(ctx.logPath, event);
+-    console.error(formatStderrLine(code, message, path, opts.ruleIndex));
++    // Formatted line goes into the log file only; console output would be painted
++    // over the TUI.
++    writeLog(ctx.logPath, { ...event, line: formatStderrLine(code, message, path, opts.ruleIndex) });
+   }
+   if (!ctx.lenient) {
+     const block = `<SYSTEM POLICY ERROR: ${code}: ${message}>
+@@ -238,7 +239,16 @@
+         };
+         transform(ctx.directory, model, output);
+       } catch (err) {
+-        console.error("[opencode-sysprompt-override] handler crashed:", err);
++        // Never console.error here. opencode renders plugin console output as an
++        // overlay on top of the TUI, and an Error passed to console.error is
++        // formatted with its code frame and full stack - it buries the chat.
++        // Log to the plugin's own file instead (writeLog swallows its own errors).
++        writeLog(join(ctx?.directory ?? ".", ".opencode", "system-prompt-override.log"), {
++          timestamp: new Date().toISOString(),
++          code: "handler-crashed",
++          message: String(err?.message ?? err),
++          stack: typeof err?.stack === "string" ? err.stack : undefined
++        });
+       }
+     }
+   };

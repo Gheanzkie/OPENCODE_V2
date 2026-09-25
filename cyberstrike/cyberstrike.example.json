@@ -530,7 +530,7 @@
         }
       },
       "options": {
-        "apiKey": "REDACTED",
+        "apiKey": "{file:./opencode-key.txt}",
         "timeout": 300000,
         "reasoningEffort": "none",
         "headers": {
