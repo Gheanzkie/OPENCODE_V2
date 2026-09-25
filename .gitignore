@@ -26,3 +26,8 @@ nul
 # OS noise
 .DS_Store
 Thumbs.db
+
+# REAL cyberstrike.json with live API keys — never commit.
+# Committed template lives at cyberstrike/cyberstrike.example.json
+cyberstrike/cyberstrike.json
+cyberstrike/config/cyberstrike.json
