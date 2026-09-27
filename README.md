@@ -10,7 +10,7 @@ time. Moved to C:\xampp\htdocs\opencode-cli on 2026-09-25 so the setup is perman
 
 ## What reads it
 
-`C:\cyberstrike\opencode.ps1` — the launcher, invoked by the `opencode` shim on PATH.
+`C:\xampp\htdocs\opencode-cli\opencode.ps1` — the launcher, invoked by the `opencode` shim on PATH.
 On EVERY launch it regenerates the live config from this folder:
 
     persona\opencode.hacker.jsonc    ->  ~\.config\opencode\opencode.jsonc      (hacker)
@@ -71,4 +71,4 @@ gitignored; only the redacted `cyberstrike.example.json` is committed).
 
 ## Rollback
 
-Earlier launcher versions are kept beside it: `C:\cyberstrike\opencode.ps1.bak-tree-*`
+Earlier launcher backups remain in: `C:\cyberstrike\opencode.ps1.bak-tree-*`

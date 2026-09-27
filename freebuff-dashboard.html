@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreeBuff Multi-Account Dashboard</title>
+<style>
+  :root {
+    --bg: #0a0a0f; --bg2: #12121a; --border: #1a1a2a; --text: #e0e0e0;
+    --text2: #aaa; --text3: #666; --accent: #00ff88; --accent2: #00cc6e;
+    --danger: #ff4466; --warn: #ffaa00; --shadow: 0 0 20px rgba(0,255,136,0.07);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace; min-height: 100vh; padding: 20px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  h1 { color: var(--accent); font-size: 1.4rem; letter-spacing: 1px; }
+  h1 span { color: var(--text3); font-weight: 400; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; }
+  .status-dot.offline { background: var(--danger); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; transition: all 0.2s; }
+  .card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .card-title { display: flex; align-items: center; gap: 8px; }
+  .card-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,255,136,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; font-weight: 700; }
+  .card-email { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-active { background: rgba(0,255,136,0.15); color: var(--accent); }
+  .badge-cooldown { background: rgba(255,170,0,0.15); color: var(--warn); }
+  .badge-banned { background: rgba(255,68,102,0.15); color: var(--danger); }
+  .badge-unknown { background: rgba(100,100,100,0.15); color: var(--text2); }
+  .card-body { display: flex; flex-direction: column; gap: 6px; font-size: 11px; color: var(--text2); }
+  .card-row { display: flex; align-items: center; gap: 6px; }
+  .card-row .icon { width: 12px; height: 12px; opacity: 0.5; }
+  .card-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); }
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .btn { font-family: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 12px; transition: all 0.2s; background: var(--bg2); color: var(--text); }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
+  .btn-primary:hover { background: var(--accent2); color: #000; }
+  .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+  .stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+  .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .stat-value { font-size: 24px; color: var(--accent); font-weight: 700; }
+  .stat-value.muted { color: var(--text3); }
+  .last-updated { font-size: 11px; color: var(--text3); text-align: right; margin-bottom: 10px; }
+  .error-banner { background: rgba(255,68,102,0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; color: var(--danger); font-size: 12px; }
+  .loading { text-align: center; padding: 40px; color: var(--text3); }
+  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 600px) { .stats { grid-template-columns: repeat(2, 1fr); } .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>⚡ FreeBuff <span>Multi-Account</span></h1>
+    <div id="connection-status"><span class="status-dot offline" id="status-dot"></span><span id="status-text">Connecting…</span></div>
+  </header>
+
+  <div id="error-container"></div>
+
+  <div class="stats" id="stats" style="display:none;">
+    <div class="stat"><div class="stat-label">Total Accounts</div><div class="stat-value" id="stat-total">0</div></div>
+    <div class="stat"><div class="stat-label">Active</div><div class="stat-value" id="stat-active">0</div></div>
+    <div class="stat"><div class="stat-label">Cooldown</div><div class="stat-value muted" id="stat-cooldown">0</div></div>
+    <div class="stat"><div class="stat-label">Banned</div><div class="stat-value muted" id="stat-banned">0</div></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="fetchTokens()">↻ Refresh</button>
+    <button class="btn" onclick="openProxyAdmin()">⚙ Proxy Admin</button>
+    <button class="btn" onclick="window.location.reload()">⟳ Reload</button>
+  </div>
+
+  <div class="last-updated" id="last-updated"></div>
+
+  <div id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Loading accounts…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROXY_API = 'http://localhost:8081';
+let tokensData = [];
+
+function formatTime(ts) {
+  if (!ts) return '—';
+  try { return new Date(ts).toLocaleTimeString(); } catch { return '—'; }
+}
+
+function getStatusClass(status) {
+  switch(status) {
+    case 'active': return 'badge-active';
+    case 'cooldown': return 'badge-cooldown';
+    case 'banned': return 'badge-banned';
+    default: return 'badge-unknown';
+  }
+}
+
+function getStatusLabel(status) {
+  switch(status) {
+    case 'active': return 'Active';
+    case 'cooldown': return 'Cooldown';
+    case 'banned': return 'Banned';
+    default: return 'Unknown';
+  }
+}
+
+function openProxyAdmin() {
+  window.open('http://localhost:8081/admin', '_blank');
+}
+
+async function fetchTokens() {
+  const dot = document.getElementById('status-dot');
+  const statusText = document.getElementById('status-text');
+  const errorContainer = document.getElementById('error-container');
+  const content = document.getElementById('content');
+  const stats = document.getElementById('stats');
+
+  dot.className = 'status-dot offline';
+  statusText.textContent = 'Fetching…';
+  errorContainer.innerHTML = '';
+  content.innerHTML = '<div class="loading"><div class="spinner"></div><div>Loading accounts…</div></div>';
+
+  try {
+    const res = await fetch(`${PROXY_API}/v1/models`, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    dot.className = 'status-dot';
+    statusText.textContent = 'Online';
+
+    const adminRes = await fetch('http://localhost:8099/admin/api/tokens', { signal: AbortSignal.timeout(5000) }).catch(() => null);
+    if (adminRes && adminRes.ok) {
+      const adminData = await adminRes.json();
+      tokensData = adminData.tokens || [];
+    } else {
+      tokensData = [];
+    }
+
+    stats.style.display = 'grid';
+    document.getElementById('stat-total').textContent = tokensData.length;
+    document.getElementById('stat-active').textContent = tokensData.filter(t => t.session_status === 'active').length;
+    document.getElementById('stat-cooldown').textContent = tokensData.filter(t => t.session_status === 'cooldown').length;
+    document.getElementById('stat-banned').textContent = tokensData.filter(t => t.session_status === 'banned').length;
+    document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
+
+    if (tokensData.length === 0) {
+      content.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">👤</div>
+          <div>No accounts in pool. Add one via Proxy Admin.</div>
+        </div>`;
+      return;
+    }
+
+    let html = '<div class="grid">';
+    tokensData.forEach((token, i) => {
+      const status = token.session_status || 'unknown';
+      html += `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="card-num">${i + 1}</div>
+              <span class="card-email">${token.email || 'Account ' + (i + 1)}</span>
+            </div>
+            <span class="badge ${getStatusClass(status)}">${getStatusLabel(status)}</span>
+          </div>
+          <div class="card-body">
+            ${token.access_tier ? `<div class="card-row">🔑 Tier: ${token.access_tier}</div>` : ''}
+            ${token.daily_limit ? `<div class="card-row">📊 Usage: ${token.today_used || 0}/${token.daily_limit}</div>` : ''}
+            ${token.session_model ? `<div class="card-row">🤖 Model: ${token.session_model}</div>` : ''}
+            ${token.standing_label ? `<div class="card-row">📈 ${token.standing_label}</div>` : ''}
+            ${token.last_usage ? `<div class="card-row">🕐 Last: ${formatTime(token.last_usage)}</div>` : ''}
+          </div>
+          <div class="card-footer">#${i + 1} · index ${token.index ?? i}</div>
+        </div>`;
+    });
+    html += '</div>';
+    content.innerHTML = html;
+
+  } catch (err) {
+    dot.className = 'status-dot offline';
+    statusText.textContent = 'Offline';
+    errorContainer.innerHTML = `<div class="error-banner">Proxy unreachable at ${PROXY_API} — ${err.message}. Start the proxy first.</div>`;
+    content.innerHTML = '';
+    stats.style.display = 'none';
+  }
+}
+
+fetchTokens();
+setInterval(fetchTokens, 30000);
+</script>
+</body>
+</html>
