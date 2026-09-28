@@ -13,9 +13,9 @@
   "model": "opencode/nemotron-3.5-lightning-free",
   "small_model": "groq/qwen/qwen3.8-27b",
   "instructions": [
-    "C:\\xampp\\htdocs\\opencode-cli\\cyberstrike\\hacker-persona.md",
-    "C:\\xampp\\htdocs\\opencode-cli\\cyberstrike-prompt.md",
-    "C:\\xampp\\htdocs\\opencode-cli\\.opencode\\prompts\\anti-refusal.md"
+    "C:\\OPENCODE_HACKER\\cyberstrike\\hacker-persona.md",
+    "C:\\OPENCODE_HACKER\\cyberstrike-prompt.md",
+    "C:\\OPENCODE_HACKER\\.opencode\\prompts\\anti-refusal.md"
   ],
   "snapshot": false
 }

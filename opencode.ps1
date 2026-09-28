@@ -1,39 +1,39 @@
-param(
-    [switch]$Menu,
-    [switch]$DryRun,
-    [ValidateSet("hacker", "default")]
-    [string]$Persona,
-    [Parameter(ValueFromRemainingArguments=$true)]
-    [String[]]$RemainingArgs
-)
-
+# No param block on purpose. opencode's own flags (-m, -v, -c, -s, -p, --version,
+# debug config, run ...) collide with PowerShell parameter binding: a ValidateSet
+# param used to swallow bare positionals (opencode debug config died with
+# "argument debug does not belong to the set"), and single-letter flags collided
+# with common parameters. Every argument is parsed by hand instead, so opencode
+# always receives exactly what it was given.
 $ErrorActionPreference = "Stop"
 
-# Decide whether to prompt. `-Menu` is forced by the Git Bash shim when stdin is a
-# real terminal (MinTTY hands Windows console apps a pipe, so interactivity cannot
-# be detected from here). For PowerShell/cmd launches we detect it ourselves. A
-# non-interactive launch with no persona set keeps the previous fallback (hacker)
-# so scripted `opencode run` calls are unaffected.
-$interactive = $false
-try { $interactive = -not [Console]::IsInputRedirected } catch { $interactive = $false }
-# With pipeline input PowerShell will not hand stdin to Read-Host reliably - the
-# prompt blocks forever. Never prompt in that case: scripts should pass -Persona,
-# and an unattended pipe falls back to the default persona below.
-$piped = $MyInvocation.ExpectingInput
-
-if ($Persona) {
-    # Explicit selection wins, so scripts and tests never have to answer the prompt.
-    $env:CYBERSTRIKE_PERSONA = $Persona
-} elseif (-not $piped -and ($Menu -or ($interactive -and -not $env:CYBERSTRIKE_PERSONA))) {
-    Write-Host "Select CyberStrike Persona:"
-    Write-Host "1) Hacker (anti-refusal wrapper ON, hacker agent injected)" -ForegroundColor Red
-    Write-Host "2) Default (clean, stock opencode: no hooks, no hacker agent, no persona config)" -ForegroundColor Blue
-    $choice = Read-Host "Choice [1]"
-    if ($choice -eq '2') {
-        $env:CYBERSTRIKE_PERSONA = "default"
+$DryRun = $false
+$Persona = $null
+$RemainingArgs = @()
+for ($i = 0; $i -lt $args.Count; $i++) {
+    $a = [string]$args[$i]
+    if ($a -match '^-{1,2}Menu$') {
+        # Persona menu is gone. Swallow the legacy flag so it never reaches opencode.
+    } elseif ($a -match '^-{1,2}DryRun$') {
+        $DryRun = $true
+    } elseif ($a -match '^-{1,2}Persona$') {
+        $i++
+        if ($i -lt $args.Count) { $Persona = [string]$args[$i] }
+    } elseif ($a -match '^-{1,2}Persona:') {
+        $Persona = $a -replace '^-{1,2}Persona:', ''
     } else {
-        $env:CYBERSTRIKE_PERSONA = "hacker"
+        $RemainingArgs += $a
     }
+}
+if ($Persona -and $Persona -notin @("hacker", "default")) {
+    Write-Error "Unknown persona '$Persona' (expected hacker or default)"
+    exit 1
+}
+
+# No persona menu, no prompt: launching opencode never blocks on Read-Host.
+# Explicit -Persona wins, then a persona inherited from the calling shell,
+# then hacker. Scripted `opencode run` calls behave the same as interactive ones.
+if ($Persona) {
+    $env:CYBERSTRIKE_PERSONA = $Persona
 } elseif (-not $env:CYBERSTRIKE_PERSONA) {
     $env:CYBERSTRIKE_PERSONA = "hacker"
 }
@@ -60,11 +60,11 @@ $pluginDir = "$HOME\.config\opencode\plugin"
 if (-not (Test-Path $pluginDir)) {
     New-Item -ItemType Directory -Force -Path $pluginDir | Out-Null
 }
-Copy-Item "C:\xampp\htdocs\opencode-cli\persona\cyberstrike-persona.js" "$pluginDir\cyberstrike-persona.js" -Force
+Copy-Item "C:\OPENCODE_HACKER\persona\cyberstrike-persona.js" "$pluginDir\cyberstrike-persona.js" -Force
 
 # Keep the folder the single source of truth for every plugin opencode loads:
 # refresh the remaining CyberStrike plugin sources from it on each launch.
-$srcPlugin = "C:\xampp\htdocs\opencode-cli\plugin"
+$srcPlugin = "C:\OPENCODE_HACKER\plugin"
 New-Item -ItemType Directory -Force -Path "$pluginDir\cyberstrike" | Out-Null
 New-Item -ItemType Directory -Force -Path "$pluginDir\anti-claude-refusals\.opencode\plugins" | Out-Null
 Copy-Item "$srcPlugin\cyberstrike\index.js","$srcPlugin\cyberstrike\index.ts","$srcPlugin\cyberstrike\skills.ts" "$pluginDir\cyberstrike\" -Force
@@ -76,7 +76,7 @@ $globalAgentDir = "$HOME\.config\opencode\agent"
 if (-not (Test-Path $agentDir)) { New-Item -ItemType Directory -Force -Path $agentDir | Out-Null }
 if (-not (Test-Path $globalAgentDir)) { New-Item -ItemType Directory -Force -Path $globalAgentDir | Out-Null }
 
-$backupHacker = "C:\xampp\htdocs\opencode-cli\agent\hacker.md"
+$backupHacker = "C:\OPENCODE_HACKER\agent\hacker.md"
 $localHacker = "$agentDir\hacker.md"
 $globalHacker = "$globalAgentDir\hacker.md"
 
@@ -97,9 +97,9 @@ if ($isHacker) {
 $configDir = "$HOME\.config\opencode"
 $liveConfig = "$configDir\opencode.jsonc"
 $personaConfig = if ($isHacker) {
-    "C:\xampp\htdocs\opencode-cli\persona\opencode.hacker.jsonc"
+    "C:\OPENCODE_HACKER\persona\opencode.hacker.jsonc"
 } else {
-    "C:\xampp\htdocs\opencode-cli\persona\opencode.default.jsonc"
+    "C:\OPENCODE_HACKER\persona\opencode.default.jsonc"
 }
 if (-not (Test-Path $configDir)) { New-Item -ItemType Directory -Force -Path $configDir | Out-Null }
 Copy-Item $personaConfig $liveConfig -Force

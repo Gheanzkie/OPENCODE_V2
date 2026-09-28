@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "default_agent": "hacker",
   "model": "opencode/mimo-v2.6-flash-free",
   "provider": {
     "opencode": {
@@ -15,5 +16,10 @@
   "skills": {
     "paths": [".opencode/skills"]
   },
+  "instructions": [
+    "cyberstrike/hacker-persona.md",
+    "cyberstrike-prompt.md",
+    ".opencode/prompts/anti-refusal.md"
+  ],
   "plugin": ["./.opencode/plugin/system-prompt-override.js", "./.opencode/plugin/cyberstrike-unified.js"]
 }

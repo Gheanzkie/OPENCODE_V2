@@ -1,16 +1,45 @@
-# opencode-cli
+# OPENCODE_HACKER
 
-Single source of truth for this machine's opencode CLI configuration
-(hacker persona + default/stock persona).
+Standalone CyberStrike opencode box: mimo anti-refusal + anti-killswitch live
+entirely inside this folder. Nothing here is written to
+`%USERPROFILE%\.config\opencode` unless you run `opencode.ps1` (the optional
+persona launcher) on purpose.
+
+## Quickstart (fresh clone, new PC)
+
+    npm install -g opencode-ai      # once
+    cd OPENCODE_HACKER
+    start.cmd                       # = CYBERSTRIKE_PERSONA=hacker + opencode
+
+`start.cmd` only sets a process env var and starts opencode with this folder as
+the project - it does not touch the global opencode config. What loads from the
+folder alone:
+
+| piece | path |
+|---|---|
+| model (mimo-v2.6-flash-free) + provider | `opencode.json` |
+| hacker agent (project-local) | `.opencode\agent\hacker.md` |
+| anti-refusal instructions | `cyberstrike\hacker-persona.md`, `cyberstrike-prompt.md`, `.opencode\prompts\anti-refusal.md` |
+| mimo system-prompt replace + append rule | `.opencode\system-prompts.json` -> `.opencode\prompts\anti-refusal-mimo.md` |
+| anti-killswitch (refusal magic-string scrubber) | `.opencode\plugin\anti-killswitch.ts` |
+| persona wrapper / retry / security plugins | `.opencode\plugin\*.js` |
+
+Verify after clone: `opencode debug config` (expect model
+`opencode/mimo-v2.6-flash-free`, plugins under `C:/.../OPENCODE_HACKER/.opencode/plugin/`),
+then `start.cmd`, then in-chat `anti-refusal status` -> `[MIMO-ARMED]`.
+
+Git: keys are gitignored (`cyberstrike/cyberstrike.json`, `cyberstrike/opencode-key.txt`,
+`auth.json`, `node_modules/`). Never commit them.
 
 ## Why this folder exists
 
 Originally lived in the Windows Temp folder, which Windows can clear at any
-time. Moved to C:\xampp\htdocs\opencode-cli on 2026-09-25 so the setup is permanent.
+time. Moved to `C:\xampp\htdocs\opencode-cli` on 2026-09-25, renamed to
+`C:\OPENCODE_HACKER` on 2026-09-28 so it can be cloned anywhere as-is.
 
 ## What reads it
 
-`C:\xampp\htdocs\opencode-cli\opencode.ps1` — the launcher, invoked by the `opencode` shim on PATH.
+`C:\OPENCODE_HACKER\opencode.ps1` — the optional persona launcher, invoked by the `opencode` shim on PATH.
 On EVERY launch it regenerates the live config from this folder:
 
     persona\opencode.hacker.jsonc    ->  ~\.config\opencode\opencode.jsonc      (hacker)
@@ -40,7 +69,7 @@ every launch.
 
 ## Commands
 
-    opencode                          # persona menu (or last chosen)
+    opencode                          # straight in, no menu (persona: hacker)
     opencode -Persona hacker          # anti-refusal wrapper + hacker agent
     opencode -Persona default         # stock opencode (--pure, no persona)
     opencode -DryRun                  # show what WOULD load; changes nothing
