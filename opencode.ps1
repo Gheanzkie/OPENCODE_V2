@@ -131,6 +131,17 @@ if ($DryRun) {
     exit 0
 }
 
+# Auto-open the quota/renewal dashboard in the default browser on a plain
+# interactive launch (opencode, no subcommand). start.cmd sets
+# CYBERSTRIKE_DASH_OPENED=1 before calling opencode so chained launches only
+# open the browser once. A browser failure never blocks the TUI.
+if (-not $RemainingArgs -and -not $env:CYBERSTRIKE_DASH_OPENED) {
+    $dashboard = Join-Path $PSScriptRoot "quota-dashboard.html"
+    if (Test-Path $dashboard) {
+        try { Start-Process $dashboard } catch { Write-Warning "dashboard open failed: $_" }
+    }
+}
+
 if ($MyInvocation.ExpectingInput) {
     $input | & $opencodeExe $opencodeArgs
 } else {

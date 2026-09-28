@@ -28,6 +28,14 @@ Verify after clone: `opencode debug config` (expect model
 `opencode/mimo-v2.6-flash-free`, plugins under `C:/.../OPENCODE_HACKER/.opencode/plugin/`),
 then `start.cmd`, then in-chat `anti-refusal status` -> `[MIMO-ARMED]`.
 
+Monitor: open `quota-dashboard.html` (double-click, works offline) — per-model
+quota cards for all 68 models (used/quota bars, daily reset countdown, mark
+exhausted) plus the email renewal pool (single + bulk add, per-email countdown,
+renew-now / renew-all-due, export/import JSON). State lives in the browser's
+localStorage. Plain interactive launches (bare `opencode`, or `start.cmd`
+with no args) auto-open the dashboard in the default browser; subcommands
+(`opencode --version`, `run`, `-DryRun`) never do.
+
 Git: keys are gitignored (`cyberstrike/cyberstrike.json`, `cyberstrike/opencode-key.txt`,
 `auth.json`, `node_modules/`). Never commit them.
 
