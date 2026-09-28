@@ -1048,13 +1048,13 @@
       "steps": 50,
       "permission": {},
       "options": {},
-      "instructions": "C:\\cyberstrike\\.cyberstrike\\plugin\\hacker-persona.js"
+      "instructions": "C:\\OPENCODE_HACKER\\persona\\cyberstrike-persona.js"
     },
     "cyberstrike": {
       "steps": 50,
       "permission": {},
       "options": {},
-      "instructions": "C:\\cyberstrike\\.cyberstrike\\plugin\\hacker-persona.js"
+      "instructions": "C:\\OPENCODE_HACKER\\persona\\cyberstrike-persona.js"
     }
   },
   "compaction": {

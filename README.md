@@ -7,13 +7,20 @@ persona launcher) on purpose.
 
 ## Quickstart (fresh clone, new PC)
 
-    npm install -g opencode-ai      # once
-    cd OPENCODE_HACKER
-    start.cmd                       # = CYBERSTRIKE_PERSONA=hacker + opencode
+    install.cmd                 # one shot: opencode-ai + freebuff + folder deps + wires `opencode`
+    start.cmd                   # = CYBERSTRIKE_PERSONA=hacker + quota dashboard + TUI
+
+`install.cmd` is idempotent: it installs the global tools if missing, runs
+`npm install` in the three folder-local package.json dirs (node_modules is
+gitignored), and rewrites the `opencode` command shims in `%APPDATA%\npm` to
+point at this folder's `opencode.ps1` (the stock shims are kept as
+`*.stock` backups). Every path in `opencode.ps1` derives from its own location
+(`$PSScriptRoot`), so the folder works from **any** clone path — nothing is
+hardcoded to `C:\OPENCODE_HACKER` anymore.
 
 `start.cmd` only sets a process env var and starts opencode with this folder as
-the project - it does not touch the global opencode config. What loads from the
-folder alone:
+the project - it does not touch the global opencode config beyond the persona
+overlay `opencode.ps1` installs on launch. What loads from the folder alone:
 
 | piece | path |
 |---|---|
@@ -28,13 +35,23 @@ Verify after clone: `opencode debug config` (expect model
 `opencode/mimo-v2.6-flash-free`, plugins under `C:/.../OPENCODE_HACKER/.opencode/plugin/`),
 then `start.cmd`, then in-chat `anti-refusal status` -> `[MIMO-ARMED]`.
 
-Monitor: open `quota-dashboard.html` (double-click, works offline) — per-model
-quota cards for all 68 models (used/quota bars, daily reset countdown, mark
-exhausted) plus the email renewal pool (single + bulk add, per-email countdown,
-renew-now / renew-all-due, export/import JSON). State lives in the browser's
-localStorage. Plain interactive launches (bare `opencode`, or `start.cmd`
-with no args) auto-open the dashboard in the default browser; subcommands
-(`opencode --version`, `run`, `-DryRun`) never do.
+Monitor: everything lives in ONE dashboard — `opencode-accounts.html` served at
+`http://127.0.0.1:8787/` (three tabs, list-style rows): **Accounts** (add /
+apply / clear API keys via the loopback API), **Model quotas** (all 68 models,
+used/quota bars, daily reset countdown, mark exhausted) and **Email pool**
+(single + bulk add, per-email countdown, renew-now / renew-all-due). Quota
+state lives in the browser's localStorage (key `qd_state_v1`, unchanged from
+the old `quota-dashboard.html`, which was removed and merged in here). Plain
+interactive launches (bare `opencode`, or `start.cmd`
+with no args) auto-open the dashboard in the default browser and print a
+Freebuff-style launch header (`◆ opencode <model> · <cwd>`); subcommands
+(`opencode --version`, `run`, `-DryRun`) never do. In-chat `/quota` prints the
+Freebuff-style quota summary (`.opencode/commands/quota.md`).
+
+`freebuff-dashboard.html` — FreeBuff pool view: live proxy pool (renders only
+when a freebuff-proxy is up on :8081/:8099), offline-capable session tracker,
+5-model pool quotas, official Freebucks rules. See `install.cmd` for the
+optional `freebuff` CLI it can install.
 
 Git: keys are gitignored (`cyberstrike/cyberstrike.json`, `cyberstrike/opencode-key.txt`,
 `auth.json`, `node_modules/`). Never commit them.

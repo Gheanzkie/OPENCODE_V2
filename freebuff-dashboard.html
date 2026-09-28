@@ -13,44 +13,61 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace; min-height: 100vh; padding: 20px; }
   .container { max-width: 1200px; margin: 0 auto; }
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
   h1 { color: var(--accent); font-size: 1.4rem; letter-spacing: 1px; }
   h1 span { color: var(--text3); font-weight: 400; }
+  h2 { color: var(--accent2); font-size: 1.05rem; margin: 26px 0 12px; letter-spacing: 0.5px; }
+  h2 .src { color: var(--text3); font-size: 10px; font-weight: 400; margin-left: 8px; }
   .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; }
   .status-dot.offline { background: var(--danger); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-bottom: 12px; }
   .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; transition: all 0.2s; }
   .card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
   .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .card-title { display: flex; align-items: center; gap: 8px; }
-  .card-num { width: 28px; height: 28px; border-radius: 50%; background: rgba(0,255,136,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; font-weight: 700; }
+  .card-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .card-num { width: 28px; height: 28px; flex: 0 0 28px; border-radius: 50%; background: rgba(0,255,136,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; font-weight: 700; }
   .card-email { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .badge-active { background: rgba(0,255,136,0.15); color: var(--accent); }
-  .badge-cooldown { background: rgba(255,170,0,0.15); color: var(--warn); }
-  .badge-banned { background: rgba(255,68,102,0.15); color: var(--danger); }
-  .badge-unknown { background: rgba(100,100,100,0.15); color: var(--text2); }
+  .card-model { font-size: 13px; font-weight: 600; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .badge-active, .badge-ok { background: rgba(0,255,136,0.15); color: var(--accent); }
+  .badge-cooldown, .badge-warn { background: rgba(255,170,0,0.15); color: var(--warn); }
+  .badge-banned, .badge-dead { background: rgba(255,68,102,0.15); color: var(--danger); }
+  .badge-unknown, .badge-mute { background: rgba(100,100,100,0.15); color: var(--text2); }
   .card-body { display: flex; flex-direction: column; gap: 6px; font-size: 11px; color: var(--text2); }
   .card-row { display: flex; align-items: center; gap: 6px; }
-  .card-row .icon { width: 12px; height: 12px; opacity: 0.5; }
-  .card-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); }
-  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .card-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar-group { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .btn { font-family: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 12px; transition: all 0.2s; background: var(--bg2); color: var(--text); }
   .btn:hover { border-color: var(--accent); color: var(--accent); }
   .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600; }
   .btn-primary:hover { background: var(--accent2); color: #000; }
-  .empty { text-align: center; padding: 60px 20px; color: var(--text3); }
-  .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+  .btn-mini { padding: 3px 9px; font-size: 11px; border-radius: 5px; }
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
   .stat { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
   .stat-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
   .stat-value { font-size: 24px; color: var(--accent); font-weight: 700; }
   .stat-value.muted { color: var(--text3); }
   .last-updated { font-size: 11px; color: var(--text3); text-align: right; margin-bottom: 10px; }
+  .info-banner { background: rgba(0,255,136,0.06); border: 1px solid var(--accent2); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; color: var(--text2); font-size: 12px; line-height: 1.5; }
+  .info-banner b { color: var(--accent); }
   .error-banner { background: rgba(255,68,102,0.1); border: 1px solid var(--danger); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; color: var(--danger); font-size: 12px; }
-  .loading { text-align: center; padding: 40px; color: var(--text3); }
-  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .hint { font-size: 11px; color: var(--text3); margin-top: 6px; }
+  .hint code { background: var(--bg2); padding: 1px 5px; border-radius: 4px; border: 1px solid var(--border); color: var(--text2); }
+  input, select { font-family: inherit; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 8px 10px; font-size: 12px; }
+  input:focus, select:focus { outline: none; border-color: var(--accent); }
+  .bar { height: 6px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-top: 4px; border: 1px solid var(--border); }
+  .bar-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+  .bar-fill.warn { background: var(--warn); }
+  .bar-fill.dead { background: var(--danger); }
+  .row-form { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+  .row-form input { flex: 1 1 160px; }
+  .row-form input.wide { flex: 2 1 280px; }
+  .rules { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  .rule { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 11px; color: var(--text2); line-height: 1.6; }
+  .rule b { color: var(--accent); }
+  .countdown { color: var(--accent); font-weight: 700; }
+  .empty { text-align: center; padding: 30px 20px; color: var(--text3); font-size: 12px; }
   @media (max-width: 600px) { .stats { grid-template-columns: repeat(2, 1fr); } .grid { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -58,144 +75,328 @@
 <div class="container">
   <header>
     <h1>⚡ FreeBuff <span>Multi-Account</span></h1>
-    <div id="connection-status"><span class="status-dot offline" id="status-dot"></span><span id="status-text">Connecting…</span></div>
+    <div><span class="status-dot offline" id="status-dot"></span><span id="status-text">Probing…</span>
+      <span style="margin-left:14px;font-size:11px;color:var(--text3)">daily reset in <span class="countdown" id="reset-clock">--:--:--</span></span></div>
   </header>
 
   <div id="error-container"></div>
 
-  <div class="stats" id="stats" style="display:none;">
-    <div class="stat"><div class="stat-label">Total Accounts</div><div class="stat-value" id="stat-total">0</div></div>
-    <div class="stat"><div class="stat-label">Active</div><div class="stat-value" id="stat-active">0</div></div>
-    <div class="stat"><div class="stat-label">Cooldown</div><div class="stat-value muted" id="stat-cooldown">0</div></div>
-    <div class="stat"><div class="stat-label">Banned</div><div class="stat-value muted" id="stat-banned">0</div></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Accounts</div><div class="stat-value" id="st-total">0</div></div>
+    <div class="stat"><div class="stat-label">Active</div><div class="stat-value" id="st-active">0</div></div>
+    <div class="stat"><div class="stat-label">Sessions today</div><div class="stat-value" id="st-sessions">0</div></div>
+    <div class="stat"><div class="stat-label">Models hit cap</div><div class="stat-value muted" id="st-dead">0</div></div>
   </div>
 
   <div class="toolbar">
-    <button class="btn btn-primary" onclick="fetchTokens()">↻ Refresh</button>
-    <button class="btn" onclick="openProxyAdmin()">⚙ Proxy Admin</button>
-    <button class="btn" onclick="window.location.reload()">⟳ Reload</button>
+    <div class="toolbar-group">
+      <button class="btn btn-primary" onclick="probeProxy(true)">↻ Refresh proxy</button>
+      <button class="btn" onclick="openProxyAdmin()">⚙ Proxy Admin</button>
+    </div>
+    <div class="toolbar-group">
+      <button class="btn" onclick="window.location.reload()">⟳ Reload</button>
+    </div>
   </div>
 
   <div class="last-updated" id="last-updated"></div>
 
-  <div id="content">
-    <div class="loading">
-      <div class="spinner"></div>
-      <div>Loading accounts…</div>
-    </div>
+  <!-- ===== LIVE PROXY POOL (8099) ===== -->
+  <h2>🔗 Proxy pool <span class="src">live from 127.0.0.1:8099/admin/api/tokens — served by freebuff-api.js (start-api.cmd)</span></h2>
+  <div id="pool-content"><div class="empty">Probing proxy…</div></div>
+
+  <!-- ===== MANUAL SESSION TRACKER (always works) ===== -->
+  <h2>🎟 Session tracker <span class="src">local — works with zero setup, persists in this browser</span></h2>
+  <div class="row-form">
+    <input class="wide" id="a-email" placeholder="email (required)" onkeydown="if(event.key==='Enter')addAccount()">
+    <select id="a-tier"><option value="limited">limited</option><option value="full">full</option></select>
+    <input id="a-limit" type="number" min="1" placeholder="sessions/day (default 6)" style="flex:0 1 170px">
+    <input id="a-note" placeholder="note (optional)" style="flex:1 1 150px">
+    <button class="btn btn-primary" onclick="addAccount()">+ Add account</button>
   </div>
+  <div class="row-form">
+    <input class="wide" id="a-bulk" placeholder="bulk: one per line — email | tier | sessions/day | note  (e.g. alt@mail.com | limited | 6 | spare)">
+    <button class="btn" onclick="bulkAdd()">+ Bulk add</button>
+  </div>
+  <div class="hint">Session rules: <code>+1</code> logs a used session for that account; counters auto-reset at local midnight.
+    Click the <code>N/L</code> chip to edit an account's daily session cap.</div>
+  <div class="grid" id="a-grid"></div>
+
+  <!-- ===== MODEL QUOTAS ===== -->
+  <h2>🎯 FreeBuff pool models <span class="src">quotas from cyberstrike.example.json provider "freebuff" (127.0.0.1:8081/v1 — live list via freebuff-api.js)</span></h2>
+  <div class="grid" id="m-grid"></div>
+
+  <!-- ===== OFFICIAL RULES ===== -->
+  <h2>📖 FreeBuff rules <span class="src">official FAQ (npm freebuff package / freebuff.com)</span></h2>
+  <div class="rules">
+    <div class="rule"><b>Modes:</b> "full" mode in US/CA/UK/EU + select countries; "limited" mode elsewhere (or via VPN).</div>
+    <div class="rule"><b>Limited mode:</b> GLM 5.3 Flash, DeepSeek V4.1 Flash, MiMo 2.6 Flash, Solar Mini 4, Solar Pro 4 — <b>6 one-hour sessions per day</b>, up to 7 by engaging promoted posts on the Earn page.</div>
+    <div class="rule"><b>Unmetered at full access:</b> GLM 5.3 Flash, DeepSeek V4.1 Flash, MiMo 2.6 Flash, Solar Mini 4, Solar Pro 4. <b>GLM 5.3 Flash costs no session at all</b> (CLI default, always available).</div>
+    <div class="rule"><b>Paid/locked:</b> Gemini 3.8 Flash requires a paid plan (listed but locked without one). GPT-6 Luna and MiMo 2.6 Pro open to every full-access account.</div>
+    <div class="rule"><b>Rate-limited:</b> Muse Spark 1.2 — 1M context, rate limited across all users; at busy times queues then answers on DeepSeek V4 Flash.</div>
+    <div class="rule"><b>Your proxy pool</b> serves 5 models with per-day quotas: GPT-5.6 Luna 4/day, GLM 5.3 Flash 2/day, Solar Pro 4 limited/daily (cap not in config — set it with ⚙), DeepSeek V4 Flash + MiMo 2.5 unmetered.</div>
+  </div>
+
+  <div class="hint" style="margin-top:20px">State key <code>fb_v1</code> in localStorage — counters auto-reset at local midnight.</div>
 </div>
 
 <script>
-const PROXY_API = 'http://localhost:8081';
+'use strict';
+// 127.0.0.1 not "localhost" — freebuff-api.js binds loopback IPv4 only, and
+// localhost can resolve to ::1 first (connection refused -> "proxy offline").
+const PROXY = 'http://127.0.0.1:8081';
+const ADMIN = 'http://127.0.0.1:8099';
+
+// Quota classes straight from cyberstrike.example.json -> provider.freebuff.models
+const FB_MODELS = [
+  { id:'deepseek/deepseek-v4-flash', n:'DeepSeek V4 Flash', d:'Smart & Fast, unmetered free model', c:1000000, o:131072, cap:null, cls:'unmetered' },
+  { id:'mimo/mimo-v2.5',             n:'MiMo 2.5',          d:'Balanced model, unlimited across all tiers', c:1000000, o:131072, cap:null, cls:'unmetered' },
+  { id:'openai/gpt-5.6-luna',        n:'GPT-5.6 Luna',      d:'Strong all-around premium model (4/day quota)', c:1000000, o:131072, cap:4, cls:'daily' },
+  { id:'z-ai/glm-5.3-flash',         n:'GLM 5.3 Flash',     d:'Deep reasoning, 2/day quota', c:262144, o:32000, cap:2, cls:'daily' },
+  { id:'upstage/solar-pro4',         n:'Solar Pro 4',       d:'UpStage Solar Pro 4 (replaced GLM 5.2 in the free pool, limited daily quota)', c:1000000, o:131072, cap:null, cls:'daily-unknown' },
+];
+
+const KEY = 'fb_v1';
+let state = { date: todayKey(), models: {}, accounts: [] };
+let proxyOnline = false;
 let tokensData = [];
 
-function formatTime(ts) {
-  if (!ts) return '—';
-  try { return new Date(ts).toLocaleTimeString(); } catch { return '—'; }
+function todayKey(){ const d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function load(){
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) { const s = JSON.parse(raw); if (s && typeof s === 'object') state = Object.assign(state, s); }
+  } catch(e){ console.warn('state load failed', e); }
+  FB_MODELS.forEach(m => { if (!state.models[m.id]) state.models[m.id] = { used: 0, cap: m.cap }; });
 }
-
-function getStatusClass(status) {
-  switch(status) {
-    case 'active': return 'badge-active';
-    case 'cooldown': return 'badge-cooldown';
-    case 'banned': return 'badge-banned';
-    default: return 'badge-unknown';
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){ console.warn('save failed', e); } }
+function dailyResetIfNeeded(){
+  const t = todayKey();
+  if (state.date !== t){
+    state.date = t;
+    Object.keys(state.models).forEach(k => state.models[k].used = 0);
+    state.accounts.forEach(a => { a.used = 0; a.last = null; });
+    save(); renderAll();
   }
 }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-function getStatusLabel(status) {
-  switch(status) {
-    case 'active': return 'Active';
-    case 'cooldown': return 'Cooldown';
-    case 'banned': return 'Banned';
-    default: return 'Unknown';
-  }
-}
-
-function openProxyAdmin() {
-  window.open('http://localhost:8081/admin', '_blank');
-}
-
-async function fetchTokens() {
+/* ---------- proxy live probe ---------- */
+async function probeProxy(manual){
   const dot = document.getElementById('status-dot');
   const statusText = document.getElementById('status-text');
-  const errorContainer = document.getElementById('error-container');
-  const content = document.getElementById('content');
-  const stats = document.getElementById('stats');
-
-  dot.className = 'status-dot offline';
-  statusText.textContent = 'Fetching…';
-  errorContainer.innerHTML = '';
-  content.innerHTML = '<div class="loading"><div class="spinner"></div><div>Loading accounts…</div></div>';
-
+  const errBox = document.getElementById('error-container');
   try {
-    const res = await fetch(`${PROXY_API}/v1/models`, { signal: AbortSignal.timeout(5000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
+    const res = await fetch(`${PROXY}/v1/models`, { signal: AbortSignal.timeout(4000) });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    proxyOnline = true;
     dot.className = 'status-dot';
-    statusText.textContent = 'Online';
-
-    const adminRes = await fetch('http://localhost:8099/admin/api/tokens', { signal: AbortSignal.timeout(5000) }).catch(() => null);
-    if (adminRes && adminRes.ok) {
-      const adminData = await adminRes.json();
-      tokensData = adminData.tokens || [];
-    } else {
-      tokensData = [];
-    }
-
-    stats.style.display = 'grid';
-    document.getElementById('stat-total').textContent = tokensData.length;
-    document.getElementById('stat-active').textContent = tokensData.filter(t => t.session_status === 'active').length;
-    document.getElementById('stat-cooldown').textContent = tokensData.filter(t => t.session_status === 'cooldown').length;
-    document.getElementById('stat-banned').textContent = tokensData.filter(t => t.session_status === 'banned').length;
-    document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
-
-    if (tokensData.length === 0) {
-      content.innerHTML = `
-        <div class="empty">
-          <div class="empty-icon">👤</div>
-          <div>No accounts in pool. Add one via Proxy Admin.</div>
-        </div>`;
-      return;
-    }
-
-    let html = '<div class="grid">';
-    tokensData.forEach((token, i) => {
-      const status = token.session_status || 'unknown';
-      html += `
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">
-              <div class="card-num">${i + 1}</div>
-              <span class="card-email">${token.email || 'Account ' + (i + 1)}</span>
-            </div>
-            <span class="badge ${getStatusClass(status)}">${getStatusLabel(status)}</span>
-          </div>
-          <div class="card-body">
-            ${token.access_tier ? `<div class="card-row">🔑 Tier: ${token.access_tier}</div>` : ''}
-            ${token.daily_limit ? `<div class="card-row">📊 Usage: ${token.today_used || 0}/${token.daily_limit}</div>` : ''}
-            ${token.session_model ? `<div class="card-row">🤖 Model: ${token.session_model}</div>` : ''}
-            ${token.standing_label ? `<div class="card-row">📈 ${token.standing_label}</div>` : ''}
-            ${token.last_usage ? `<div class="card-row">🕐 Last: ${formatTime(token.last_usage)}</div>` : ''}
-          </div>
-          <div class="card-footer">#${i + 1} · index ${token.index ?? i}</div>
-        </div>`;
-    });
-    html += '</div>';
-    content.innerHTML = html;
-
+    statusText.textContent = 'Proxy online';
+    errBox.innerHTML = '';
+    let toks = [];
+    try {
+      const a = await fetch(`${ADMIN}/admin/api/tokens`, { signal: AbortSignal.timeout(4000) });
+      if (a.ok) { const j = await a.json(); toks = j.tokens || []; }
+    } catch(e){ /* admin optional */ }
+    tokensData = toks;
+    document.getElementById('last-updated').textContent = 'Proxy last updated: ' + new Date().toLocaleTimeString();
+    renderPool();
   } catch (err) {
+    proxyOnline = false;
     dot.className = 'status-dot offline';
-    statusText.textContent = 'Offline';
-    errorContainer.innerHTML = `<div class="error-banner">Proxy unreachable at ${PROXY_API} — ${err.message}. Start the proxy first.</div>`;
-    content.innerHTML = '';
-    stats.style.display = 'none';
+    statusText.textContent = 'Proxy offline';
+    tokensData = [];
+    errBox.innerHTML = `<div class="error-banner">Proxy not reachable at ${PROXY} (${esc(err.message)}). The pool view stays empty until freebuff-api.js is running — session tracker and model quotas below keep working. Start the API (start-api.cmd), then hit ↻ Refresh.</div>`;
+    renderPool();
   }
+  renderStats();
+  if (manual) document.getElementById('last-updated').textContent = 'Manual refresh: ' + new Date().toLocaleTimeString();
+}
+function openProxyAdmin(){ window.open(PROXY + '/admin', '_blank'); }
+
+function statusBadge(s){
+  const map = { active:['badge-active','Active'], cooldown:['badge-cooldown','Cooldown'], banned:['badge-banned','Banned'] };
+  const [c,l] = map[s] || ['badge-unknown','Unknown'];
+  return `<span class="badge ${c}">${l}</span>`;
+}
+function fmtTime(ts){ if(!ts) return '—'; try { return new Date(ts).toLocaleTimeString(); } catch { return '—'; } }
+
+function renderPool(){
+  const el = document.getElementById('pool-content');
+  if (!proxyOnline){ el.innerHTML = '<div class="empty">💤 Proxy pool hidden — proxy offline. Manual session tracker below is the source of truth while offline.</div>'; return; }
+  if (tokensData.length === 0){ el.innerHTML = '<div class="empty">Proxy online — 0 accounts in pool. Add one via ⚙ Proxy Admin.</div>'; return; }
+  let html = '<div class="grid">';
+  tokensData.forEach((t, i) => {
+    const st = t.session_status || 'unknown';
+    html += `<div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-num">${i+1}</div>
+      <span class="card-email">${esc(t.email || 'Account ' + (i+1))}</span></div>${statusBadge(st)}</div>
+      <div class="card-body">
+        ${t.access_tier ? `<div class="card-row">🔑 Tier: ${esc(t.access_tier)}</div>` : ''}
+        ${t.daily_limit ? `<div class="card-row">📊 Sessions: ${t.today_used || 0}/${t.daily_limit}</div>` : ''}
+        ${t.session_model ? `<div class="card-row">🤖 Model: ${esc(t.session_model)}</div>` : ''}
+        ${t.standing_label ? `<div class="card-row">📈 ${esc(t.standing_label)}</div>` : ''}
+        ${t.last_usage ? `<div class="card-row">🕐 Last: ${fmtTime(t.last_usage)}</div>` : ''}
+      </div>
+      <div class="card-footer">#${i+1} · index ${t.index ?? i}</div></div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
 }
 
-fetchTokens();
-setInterval(fetchTokens, 30000);
+/* ---------- manual session tracker ---------- */
+function addAccount(){
+  const email = document.getElementById('a-email').value.trim();
+  if (!email) return;
+  const tier = document.getElementById('a-tier').value;
+  const lim = parseInt(document.getElementById('a-limit').value, 10);
+  const note = document.getElementById('a-note').value.trim();
+  state.accounts.push({ email, tier, limit: (lim > 0 ? lim : 6), used: 0, status: 'active', note, last: null });
+  document.getElementById('a-email').value = ''; document.getElementById('a-limit').value = ''; document.getElementById('a-note').value = '';
+  save(); renderAll();
+}
+function bulkAdd(){
+  const raw = document.getElementById('a-bulk').value.trim();
+  if (!raw) return;
+  let n = 0;
+  raw.split(/\r?\n/).forEach(line => {
+    const parts = line.split('|').map(s => s.trim());
+    if (!parts[0]) return;
+    const lim = parseInt(parts[2], 10);
+    state.accounts.push({ email: parts[0], tier: parts[1] || 'limited', limit: (lim > 0 ? lim : 6), used: 0, status: 'active', note: parts[3] || '', last: null });
+    n++;
+  });
+  document.getElementById('a-bulk').value = '';
+  save(); renderAll();
+  if (n) document.getElementById('last-updated').textContent = `Bulk added ${n} account(s) at ` + new Date().toLocaleTimeString();
+}
+function bumpSession(i){ const a = state.accounts[i]; if (!a) return; a.used = Math.min(a.used + 1, 999); a.last = Date.now(); save(); renderAll(); }
+function resetSession(i){ const a = state.accounts[i]; if (!a) return; a.used = 0; a.last = null; save(); renderAll(); }
+function removeAccount(i){ state.accounts.splice(i, 1); save(); renderAll(); }
+function setStatus(i, v){ const a = state.accounts[i]; if (a){ a.status = v; save(); renderAll(); } }
+function editLimit(i){ const a = state.accounts[i]; if (!a) return; const v = prompt('Daily session cap for ' + a.email + ':', a.limit); if (v === null) return; const n = parseInt(v, 10); if (n > 0){ a.limit = n; save(); renderAll(); } }
+function purgeBanned(){ state.accounts = state.accounts.filter(a => a.status !== 'banned'); save(); renderAll(); }
+
+function renderAccounts(){
+  const el = document.getElementById('a-grid');
+  if (state.accounts.length === 0){ el.innerHTML = '<div class="empty" style="grid-column:1/-1">No local accounts yet — add one above.</div>'; return; }
+  let html = '';
+  state.accounts.forEach((a, i) => {
+    const pct = a.limit ? Math.min(100, Math.round(a.used / a.limit * 100)) : 0;
+    const cls = a.limit && a.used >= a.limit ? 'dead' : (pct >= 75 ? 'warn' : '');
+    html += `<div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-num">${i+1}</div>
+        <span class="card-email" title="${esc(a.email)}">${esc(a.email)}</span></div>
+        ${statusBadge(a.status)}</div>
+      <div class="card-body">
+        <div class="card-row">🔑 Tier: ${esc(a.tier)}</div>
+        <div class="card-row" style="cursor:pointer" onclick="editLimit(${i})" title="click to edit cap">🎟 Sessions:
+          <b style="color:${a.used >= (a.limit||99) ? 'var(--danger)' : 'var(--accent)'}">${a.used}/${a.limit}</b>
+          <div class="bar" style="flex:1"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div></div>
+        ${a.last ? `<div class="card-row">🕐 Last: ${fmtTime(a.last)}</div>` : ''}
+        ${a.note ? `<div class="card-row">📝 ${esc(a.note)}</div>` : ''}
+      </div>
+      <div class="card-footer">
+        <span>
+          <button class="btn btn-mini" onclick="bumpSession(${i})">+1 session</button>
+          <button class="btn btn-mini" onclick="resetSession(${i})">⟳ reset</button>
+        </span>
+        <span>
+          <select onchange="setStatus(${i}, this.value)" style="padding:2px 6px;font-size:10px">
+            ${['active','cooldown','banned'].map(s => `<option value="${s}" ${a.status===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+          <button class="btn btn-mini" onclick="removeAccount(${i})">🗑</button>
+        </span>
+      </div></div>`;
+  });
+  el.innerHTML = html;
+}
+
+/* ---------- model quotas ---------- */
+function modelCap(id){ const m = FB_MODELS.find(x => x.id === id); const s = state.models[id]; return (s && s.cap != null) ? s.cap : (m ? m.cap : null); }
+function bumpModel(id, delta){
+  const s = state.models[id]; if (!s) return;
+  s.used = Math.max(0, s.used + delta); save(); renderAll();
+}
+function markExhausted(id){ const s = state.models[id]; if (!s) return; const cap = modelCap(id); s.used = cap != null ? cap : Math.max(s.used, 999); if (cap == null) s.forced = true; save(); renderAll(); }
+function clearModel(id){ const s = state.models[id]; if (!s) return; s.used = 0; delete s.forced; save(); renderAll(); }
+function setCap(id){
+  const m = FB_MODELS.find(x => x.id === id); if (!m) return;
+  const v = prompt('Daily cap for ' + m.n + ' (blank = unlimited):', modelCap(id) ?? '');
+  if (v === null) return;
+  const s = state.models[id];
+  const n = parseInt(v, 10);
+  s.cap = (v.trim() === '' || isNaN(n)) ? null : n;
+  delete s.forced; save(); renderAll();
+}
+function renderModels(){
+  const el = document.getElementById('m-grid');
+  let html = '';
+  FB_MODELS.forEach(m => {
+    const s = state.models[m.id] || { used: 0, cap: m.cap };
+    const cap = s.cap != null ? s.cap : m.cap;
+    const dead = !!s.forced || (cap != null && s.used >= cap);
+    const pct = cap != null ? Math.min(100, Math.round(s.used / cap * 100)) : 0;
+    const badge = dead ? '<span class="badge badge-dead">exhausted</span>'
+      : (cap == null ? '<span class="badge badge-ok">unmetered</span>'
+      : (cap > 0 && s.used / cap >= 0.75 ? '<span class="badge badge-warn">warn</span>' : '<span class="badge badge-ok">ok</span>'));
+    html += `<div class="card">
+      <div class="card-header"><div class="card-title"><div class="card-num">M</div>
+        <span class="card-model">${esc(m.n)}</span></div>${badge}</div>
+      <div class="card-body">
+        <div class="card-row">${esc(m.id)}</div>
+        <div class="card-row">ctx ${(m.c/1000|0)}K · out ${(m.o/1000|0)}K</div>
+        <div class="card-row">📊 ${s.used}/${cap != null ? cap : '∞'} used today
+          ${cap != null ? `<div class="bar" style="flex:1"><div class="bar-fill ${dead?'dead':(pct>=75?'warn':'')}" style="width:${pct}%"></div></div>` : ''}</div>
+        <div class="card-row" style="color:var(--text3)">${esc(m.d)}</div>
+      </div>
+      <div class="card-footer">
+        <span>
+          <button class="btn btn-mini" onclick="bumpModel('${m.id}',-1)">−1</button>
+          <button class="btn btn-mini" onclick="bumpModel('${m.id}',1)">+1</button>
+          <button class="btn btn-mini" onclick="setCap('${m.id}')" title="set daily cap">⚙ cap</button>
+        </span>
+        <span>
+          <button class="btn btn-mini" onclick="markExhausted('${m.id}')">⛔</button>
+          <button class="btn btn-mini" onclick="clearModel('${m.id}')">⟳</button>
+        </span>
+      </div></div>`;
+  });
+  el.innerHTML = html;
+}
+
+/* ---------- stats / clock ---------- */
+function renderStats(){
+  const live = proxyOnline && tokensData.length > 0;
+  const accounts = live ? tokensData : state.accounts;
+  const active = accounts.filter(a => live ? a.session_status === 'active' : a.status === 'active').length;
+  const sessions = state.accounts.reduce((n, a) => n + (a.used || 0), 0);
+  let dead = 0;
+  Object.keys(state.models).forEach(id => {
+    const s = state.models[id]; const cap = modelCap(id);
+    if (s.forced || (cap != null && s.used >= cap)) dead++;
+  });
+  document.getElementById('st-total').textContent = accounts.length;
+  document.getElementById('st-active').textContent = active;
+  document.getElementById('st-sessions').textContent = sessions;
+  document.getElementById('st-dead').textContent = dead;
+}
+function renderClock(){
+  const now = new Date();
+  const mid = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  let s = Math.max(0, Math.floor((mid - now) / 1000));
+  const h = String(Math.floor(s / 3600)).padStart(2, '0');
+  const m = String(Math.floor(s % 3600 / 60)).padStart(2, '0');
+  const sec = String(s % 60).padStart(2, '0');
+  document.getElementById('reset-clock').textContent = `${h}:${m}:${sec}`;
+}
+function renderAll(){ renderAccounts(); renderModels(); renderStats(); renderPool(); }
+
+load();
+renderAll();
+renderClock();
+probeProxy(false);
+setInterval(() => { dailyResetIfNeeded(); renderClock(); }, 1000);
+setInterval(() => probeProxy(false), 30000);
 </script>
 </body>
 </html>

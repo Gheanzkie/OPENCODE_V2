@@ -11,11 +11,7 @@ if errorlevel 1 (
   echo [BLOCKED] opencode not on PATH. Install first: npm install -g opencode-ai
   exit /b 1
 )
-rem Auto-open the quota dashboard on a plain interactive launch (no args).
-rem Flag tells opencode.ps1 the browser is already open (no double tab).
-if "%~1"=="" if exist "%~dp0quota-dashboard.html" (
-  start "" "%~dp0quota-dashboard.html"
-  set "CYBERSTRIKE_DASH_OPENED=1"
-)
+rem Dashboard auto-open is handled by opencode.ps1 (starts accounts-server.js
+rem on 127.0.0.1:8787 and opens the accounts dashboard) — no browser here.
 opencode %*
 exit /b %ERRORLEVEL%
