@@ -18,6 +18,12 @@ point at this folder's `opencode.ps1` (the stock shims are kept as
 (`$PSScriptRoot`), so the folder works from **any** clone path — nothing is
 hardcoded to `C:\OPENCODE_HACKER` anymore.
 
+Every `npm install` in `install.ps1` has a **zero-network fallback**: if the
+online install fails, it retries with `--offline --cache offline\npm-cache`
+against the pruned cacache bundle shipped in this repo (cross-platform
+`opencode-*` packuments stripped; win32-x64 tarballs + packuments kept, so
+fresh clones install without network access).
+
 `start.cmd` only sets a process env var and starts opencode with this folder as
 the project - it does not touch the global opencode config beyond the persona
 overlay `opencode.ps1` installs on launch. What loads from the folder alone:

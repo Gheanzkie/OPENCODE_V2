@@ -26,10 +26,20 @@ if (-not (Which "npm")) {
 }
 Write-Host " ✓ node $((node -v))" -ForegroundColor DarkGray
 
-# --- 2. global tools (what the original box had installed) -------------
+# --- 2. offline bundle (zero-network fallback) -------------------------
+# The repo ships a pruned cacache bundle so a fresh clone installs with no
+# network. Online is tried first; on failure we retry from the bundle.
+$offlineCache = Join-Path $root "offline\npm-cache"
+$hasBundle = Test-Path (Join-Path $offlineCache "_cacache")
+
+# --- 3. global tools (what the original box had installed) -------------
 if (-not (Which "opencode")) {
     Write-Host " + npm install -g opencode-ai" -ForegroundColor Cyan
     & npm install -g opencode-ai
+    if ($LASTEXITCODE -ne 0 -and $hasBundle) {
+        Write-Host " [RETRY] opencode-ai online failed - offline bundle" -ForegroundColor Yellow
+        & npm install -g opencode-ai --offline --cache $offlineCache
+    }
     if ($LASTEXITCODE -ne 0) { Write-Host " [BLOCKED] opencode-ai install failed" -ForegroundColor Red; exit 1 }
 } else {
     Write-Host " ✓ opencode already installed" -ForegroundColor DarkGray
@@ -37,23 +47,33 @@ if (-not (Which "opencode")) {
 if (-not (Which "freebuff")) {
     Write-Host " + npm install -g freebuff (binary downloads on first run)" -ForegroundColor Cyan
     & npm install -g freebuff
+    if ($LASTEXITCODE -ne 0 -and $hasBundle) {
+        Write-Host " [RETRY] freebuff online failed - offline bundle" -ForegroundColor Yellow
+        & npm install -g freebuff --offline --cache $offlineCache
+    }
     if ($LASTEXITCODE -ne 0) { Write-Host " [WARN] freebuff install failed - optional" -ForegroundColor Yellow }
 } else {
     Write-Host " ✓ freebuff already installed" -ForegroundColor DarkGray
 }
 
-# --- 3. folder-local plugin dependencies (node_modules is gitignored) --
+# --- 4. folder-local plugin dependencies (node_modules is gitignored) --
 foreach ($dir in @(".", ".opencode", "cyberstrike")) {
     $pkg = Join-Path $root (Join-Path $dir "package.json")
     if (Test-Path $pkg) {
         Write-Host " + npm install ($dir)" -ForegroundColor Cyan
         Push-Location (Join-Path $root $dir)
-        try { & npm install --no-fund --no-audit } finally { Pop-Location }
+        try {
+            & npm install --no-fund --no-audit
+            if ($LASTEXITCODE -ne 0 -and $hasBundle) {
+                Write-Host " [RETRY] $dir online failed - offline bundle" -ForegroundColor Yellow
+                & npm install --no-fund --no-audit --offline --cache $offlineCache
+            }
+        } finally { Pop-Location }
         if ($LASTEXITCODE -ne 0) { Write-Host " [WARN] npm install failed in $dir" -ForegroundColor Yellow }
     }
 }
 
-# --- 4. wire the `opencode` command to this folder's launcher ----------
+# --- 5. wire the `opencode` command to this folder's launcher ----------
 $npmDir = "$env:APPDATA\npm"
 if (-not (Test-Path $npmDir)) {
     Write-Host " [BLOCKED] npm global dir $npmDir not found" -ForegroundColor Red
@@ -88,7 +108,7 @@ foreach ($path in $shims.Keys) {
     Write-Host " ✓ wired $name -> opencode.ps1" -ForegroundColor DarkGray
 }
 
-# --- 5. verify ---------------------------------------------------------
+# --- 6. verify ---------------------------------------------------------
 Write-Host ""
 $ver = cmd /c "opencode --version 2>nul"
 if ($ver) {
