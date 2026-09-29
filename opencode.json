@@ -30,37 +30,37 @@
     },
     "sec-responder": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["python", "-m", "impacket.examples.responder", "-I", "eth0"]
     },
     "sec-impacket": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["python", "-m", "impacket.examples.secretsdump"]
     },
     "sec-bloodhound": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["bloodhound"]
     },
     "sec-shodan": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["shodan"]
     },
     "sec-github": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["gh"]
     },
     "sec-interactsh": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["interactsh-client"]
     },
     "sec-metasploit": {
       "type": "local",
-      "enabled": true,
+      "enabled": false,
       "command": ["msfconsole"]
     }
   }
