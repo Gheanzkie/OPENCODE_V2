@@ -7,5 +7,6 @@
 // so no external plugin, skill or CLAUDE.md reaches the session either.
 {
   "$schema": "https://opencode.ai/config.json",
-  "snapshot": false
+  "snapshot": false,
+  "mcp": {}
 }

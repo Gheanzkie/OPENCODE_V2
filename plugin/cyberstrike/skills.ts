@@ -35,6 +35,7 @@ export interface SkillInfo {
 }
 
 const SKILL_DIRS = [
+  join("C:\\OPENCODE_HACKER", ".opencode", "skills"),
   join(homedir(), ".claude", "skills"),
   join(homedir(), ".agents", "skills"),
   join(homedir(), ".config", "opencode", "skills"),

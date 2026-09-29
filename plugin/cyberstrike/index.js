@@ -3,8 +3,6 @@
  */
 
 import { appendFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
 
 // Persona gate. The CyberStrike layer only exists for the hacker persona. In the
 // default persona (or when CYBERSTRIKE_PERSONA is unset) this plugin registers no
@@ -15,7 +13,7 @@ const DEBUG = process.env.CYBERSTRIKE_RETRY_DEBUG;
 const debug = (m) => {
   if (!DEBUG) return;
   try {
-    appendFileSync(join(tmpdir(), "oc-retry-debug.log"), m + "\n");
+    appendFileSync("C:\\cyberstrike\\scratch\\oc-retry-debug.log", m + "\n");
   } catch {}
 };
 

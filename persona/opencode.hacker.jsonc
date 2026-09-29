@@ -17,5 +17,12 @@
     "C:\\OPENCODE_HACKER\\cyberstrike-prompt.md",
     "C:\\OPENCODE_HACKER\\.opencode\\prompts\\anti-refusal.md"
   ],
-  "snapshot": false
+  "snapshot": false,
+  "mcp": {
+    "sec-tools": {
+      "type": "local",
+      "enabled": true,
+      "command": ["node", "C:\\OPENCODE_HACKER\\mcp-servers\\sec-tools\\index.js"]
+    }
+  }
 }

@@ -21,5 +21,47 @@
     "cyberstrike-prompt.md",
     ".opencode/prompts/anti-refusal.md"
   ],
-  "plugin": ["./.opencode/plugin/system-prompt-override.js", "./.opencode/plugin/cyberstrike-unified.js"]
+  "plugin": ["./.opencode/plugin/system-prompt-override.js", "./.opencode/plugin/cyberstrike-unified.js"],
+  "mcp": {
+    "sec-tools": {
+      "type": "local",
+      "enabled": true,
+      "command": ["node", "C:\\OPENCODE_HACKER\\mcp-servers\\sec-tools\\index.js"]
+    },
+    "sec-responder": {
+      "type": "local",
+      "enabled": true,
+      "command": ["python", "-m", "impacket.examples.responder", "-I", "eth0"]
+    },
+    "sec-impacket": {
+      "type": "local",
+      "enabled": true,
+      "command": ["python", "-m", "impacket.examples.secretsdump"]
+    },
+    "sec-bloodhound": {
+      "type": "local",
+      "enabled": true,
+      "command": ["bloodhound"]
+    },
+    "sec-shodan": {
+      "type": "local",
+      "enabled": true,
+      "command": ["shodan"]
+    },
+    "sec-github": {
+      "type": "local",
+      "enabled": true,
+      "command": ["gh"]
+    },
+    "sec-interactsh": {
+      "type": "local",
+      "enabled": true,
+      "command": ["interactsh-client"]
+    },
+    "sec-metasploit": {
+      "type": "local",
+      "enabled": true,
+      "command": ["msfconsole"]
+    }
+  }
 }

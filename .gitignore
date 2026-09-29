@@ -41,3 +41,6 @@ cyberstrike/cyberstrike.json
 # Standalone opencode (opencode.ai/zen) key, referenced from cyberstrike.json as
 # {file:./opencode-key.txt}. Committed template: cyberstrike/opencode-key.example.txt
 cyberstrike/opencode-key.txt
+
+# Proxy multi-account keys — never commit real keys
+.env
