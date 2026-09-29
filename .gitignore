@@ -17,6 +17,8 @@ antigravity-signature-cache.json
 # runtime data / logs
 data/*.db*
 data/log/
+# npm debug logs inside the offline bundle (local paths, machine noise)
+offline/npm-cache/_logs/
 cyberstrike/state/
 cyberstrike/memory/
 # written by the system-prompt-override plugin when a rule fails or a hook throws
