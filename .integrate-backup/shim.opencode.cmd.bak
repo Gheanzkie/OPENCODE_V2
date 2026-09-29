@@ -1,0 +1,3 @@
+@ECHO off
+SETLOCAL
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\OPENCODE_ANTI_REFUSAL\opencode.ps1" %*

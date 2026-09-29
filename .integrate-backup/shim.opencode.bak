@@ -1,0 +1,6 @@
+#!/bin/sh
+if [ -t 0 ]; then
+  exec powershell -NoProfile -ExecutionPolicy Bypass -File 'C:\OPENCODE_ANTI_REFUSAL\opencode.ps1' -Menu "$@"
+else
+  exec powershell -NoProfile -ExecutionPolicy Bypass -File 'C:\OPENCODE_ANTI_REFUSAL\opencode.ps1' "$@"
+fi

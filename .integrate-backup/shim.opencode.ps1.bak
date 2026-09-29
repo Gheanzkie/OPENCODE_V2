@@ -1,0 +1,4 @@
+﻿#!/usr/bin/env pwsh
+$launcher = "C:\OPENCODE_ANTI_REFUSAL\opencode.ps1"
+if ($MyInvocation.ExpectingInput) { $input | & $launcher @args } else { & $launcher @args }
+exit $LASTEXITCODE
