@@ -19,6 +19,9 @@ data/*.db*
 data/log/
 # npm debug logs inside the offline bundle (local paths, machine noise)
 offline/npm-cache/_logs/
+# npm update-notifier stamp inside the offline bundle (machine-local)
+offline/npm-cache/_update-notifier-last-checked
+offline/npm-cache/_cacache/tmp/
 cyberstrike/state/
 cyberstrike/memory/
 # written by the system-prompt-override plugin when a rule fails or a hook throws
