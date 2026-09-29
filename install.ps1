@@ -5,6 +5,19 @@
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 
+# component bookkeeping for the final SUCCESS / press-any-key banner
+$script:done  = @()
+$script:failed = @()
+
+function Exit-Pause([int]$code) {
+    Write-Host ""
+    Write-Host " Press any key to exit..." -ForegroundColor White -NoNewline
+    if ([Console]::IsInputRedirected) { Write-Host "" }
+    else { try { $null = [Console]::ReadKey($true); Write-Host "" } catch { Write-Host "" } }
+    exit $code
+}
+
+
 function Which($name) {
     $c = Get-Command $name -ErrorAction SilentlyContinue
     if ($c) { return @($c)[0].Source }
@@ -18,13 +31,16 @@ Write-Host "· $root" -ForegroundColor DarkGray
 # --- 1. runtime checks -------------------------------------------------
 if (-not (Which "node")) {
     Write-Host " [BLOCKED] Node.js 18+ not found - install from https://nodejs.org" -ForegroundColor Red
-    exit 1
+    $script:failed += "Node.js runtime"
+    Exit-Pause 1
 }
 if (-not (Which "npm")) {
     Write-Host " [BLOCKED] npm not found" -ForegroundColor Red
-    exit 1
+    $script:failed += "npm"
+    Exit-Pause 1
 }
 Write-Host " ✓ node $((node -v))" -ForegroundColor DarkGray
+$script:done += "node $(node -v) + npm"
 
 # --- 2. offline bundle (zero-network fallback) -------------------------
 # The repo ships a pruned cacache bundle so a fresh clone installs with no
@@ -40,10 +56,15 @@ if (-not (Which "opencode")) {
         Write-Host " [RETRY] opencode-ai online failed - offline bundle" -ForegroundColor Yellow
         & npm install -g opencode-ai --offline --cache $offlineCache
     }
-    if ($LASTEXITCODE -ne 0) { Write-Host " [BLOCKED] opencode-ai install failed" -ForegroundColor Red; exit 1 }
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host " [BLOCKED] opencode-ai install failed" -ForegroundColor Red
+        $script:failed += "opencode-ai (global)"
+        Exit-Pause 1
+    }
 } else {
     Write-Host " ✓ opencode already installed" -ForegroundColor DarkGray
 }
+$script:done += "opencode-ai (global)"
 if (-not (Which "freebuff")) {
     Write-Host " + npm install -g freebuff (binary downloads on first run)" -ForegroundColor Cyan
     & npm install -g freebuff
@@ -51,9 +72,15 @@ if (-not (Which "freebuff")) {
         Write-Host " [RETRY] freebuff online failed - offline bundle" -ForegroundColor Yellow
         & npm install -g freebuff --offline --cache $offlineCache
     }
-    if ($LASTEXITCODE -ne 0) { Write-Host " [WARN] freebuff install failed - optional" -ForegroundColor Yellow }
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host " [WARN] freebuff install failed - optional" -ForegroundColor Yellow
+        $script:failed += "freebuff (global, optional)"
+    } else {
+        $script:done += "freebuff (global)"
+    }
 } else {
     Write-Host " ✓ freebuff already installed" -ForegroundColor DarkGray
+    $script:done += "freebuff (global)"
 }
 
 # --- 4. folder-local plugin dependencies (node_modules is gitignored) --
@@ -69,7 +96,12 @@ foreach ($dir in @(".", ".opencode", "cyberstrike")) {
                 & npm install --no-fund --no-audit --offline --cache $offlineCache
             }
         } finally { Pop-Location }
-        if ($LASTEXITCODE -ne 0) { Write-Host " [WARN] npm install failed in $dir" -ForegroundColor Yellow }
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host " [WARN] npm install failed in $dir" -ForegroundColor Yellow
+            $script:failed += "npm install ($dir)"
+        } else {
+            $script:done += "deps ($dir)"
+        }
     }
 }
 
@@ -77,7 +109,8 @@ foreach ($dir in @(".", ".opencode", "cyberstrike")) {
 $npmDir = "$env:APPDATA\npm"
 if (-not (Test-Path $npmDir)) {
     Write-Host " [BLOCKED] npm global dir $npmDir not found" -ForegroundColor Red
-    exit 1
+    $script:failed += "npm global dir ($npmDir)"
+    Exit-Pause 1
 }
 $rootPs1 = "$root\opencode.ps1"
 $rootEsc = [regex]::Escape($rootPs1)
@@ -113,13 +146,35 @@ Write-Host ""
 $ver = cmd /c "opencode --version 2>nul"
 if ($ver) {
     Write-Host " ✓ opencode $ver via this folder's launcher" -ForegroundColor Green
+    $script:done += "opencode launcher ($ver)"
 } else {
     Write-Host " [WARN] opencode --version returned nothing - check PATH" -ForegroundColor Yellow
+    $script:failed += "opencode launcher verify"
+}
+$script:done += "command shims wired -> opencode.ps1"
+
+# --- 7. result banner --------------------------------------------------
+Write-Host ""
+$allOk = ($script:failed.Count -eq 0)
+if ($allOk) {
+    Write-Host " ═══════════════════════════════════════════════════" -ForegroundColor Green
+    Write-Host "  SUCCESSFULLY installed ALL components on this PC " -ForegroundColor Green -BackgroundColor Black
+    Write-Host " ═══════════════════════════════════════════════════" -ForegroundColor Green
+    foreach ($c in $script:done) { Write-Host "   ✓ $c" -ForegroundColor DarkGray }
+    Write-Host ""
+    Write-Host " Done. Next:" -ForegroundColor Green
+    Write-Host "   start.cmd                 (hacker persona + quota dashboard auto-open)"
+    Write-Host "   opencode                  (splash header + dashboard, same as start.cmd)"
+    Write-Host "   opencode -DryRun          (show what a launch would do, changes nothing)"
+    Write-Host " In-chat: /quota for the Freebuff-style quota summary."
+} else {
+    Write-Host " ═══════════════════════════════════════════════════" -ForegroundColor Yellow
+    Write-Host "  INSTALL FINISHED WITH WARNINGS                   " -ForegroundColor Yellow
+    Write-Host " ═══════════════════════════════════════════════════" -ForegroundColor Yellow
+    Write-Host " Installed OK:" -ForegroundColor DarkGray
+    foreach ($c in $script:done) { Write-Host "   ✓ $c" -ForegroundColor DarkGray }
+    Write-Host " Needs attention:" -ForegroundColor Yellow
+    foreach ($c in $script:failed) { Write-Host "   ✗ $c" -ForegroundColor Red }
 }
 Write-Host ""
-Write-Host " Done. Next:" -ForegroundColor Green
-Write-Host "   start.cmd                 (hacker persona + quota dashboard auto-open)"
-Write-Host "   opencode                  (splash header + dashboard, same as start.cmd)"
-Write-Host "   opencode -DryRun          (show what a launch would do, changes nothing)"
-Write-Host " In-chat: /quota for the Freebuff-style quota summary."
-Write-Host ""
+Exit-Pause 0
