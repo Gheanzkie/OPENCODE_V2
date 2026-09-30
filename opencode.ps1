@@ -13,14 +13,14 @@ $root = $PSScriptRoot
 
 $DryRun = $false
 $Persona = $null
-$ForceMenu = $false
 $RemainingArgs = @()
 for ($i = 0; $i -lt $args.Count; $i++) {
     $a = [string]$args[$i]
     if ($a -match '^-{1,2}Menu$') {
-        # Persona menu is back (V2 fix): -Menu forces the prompt even on launches
-        # that would otherwise skip it.
-        $ForceMenu = $true
+        # Menu REMOVED (operator order): plain `opencode` is automatic hacker,
+        # no persona prompt. -Menu is swallowed so old muscle memory does not
+        # leak an unknown flag into opencode itself.
+        continue
     } elseif ($a -match '^-{1,2}DryRun$') {
         $DryRun = $true
     } elseif ($a -match '^-{1,2}Persona$') {
@@ -37,34 +37,10 @@ if ($Persona -and $Persona -notin @("hacker", "default")) {
     exit 1
 }
 
-# Persona menu (V2 fix): an explicit -Persona wins, a piped launch never prompts
-# (Read-Host would block forever on redirected stdin), and everything else asks.
-# The interactivity check mirrors V2: a real console prompts; scripted/non-console
-# launches fall through to the hacker fallback so `opencode run` and tests stay
-# unattended.
-$piped = $false
-try { $piped = $MyInvocation.ExpectingInput } catch { $piped = $false }
-$interactive = $false
-try { $interactive = -not [Console]::IsInputRedirected } catch { $interactive = $false }
-
-if ($Persona) {
-    # Explicit selection wins, so scripts and tests never have to answer the prompt.
-    $env:CYBERSTRIKE_PERSONA = $Persona
-} elseif ($ForceMenu -or (-not $piped -and $interactive)) {
-    Write-Host "Select CyberStrike Persona:"
-    Write-Host "1) Hacker (anti-refusal wrapper ON, hacker agent injected)" -ForegroundColor Red
-    Write-Host "2) Default (clean, stock opencode: no hooks, no hacker agent, no persona config)" -ForegroundColor Blue
-    $choice = $null
-    try { $choice = Read-Host "Choice [1]" } catch { $choice = $null }
-    if ($choice -eq '2') {
-        $env:CYBERSTRIKE_PERSONA = "default"
-    } else {
-        # Choice 1 / empty / non-interactive host (Read-Host unavailable): hacker.
-        $env:CYBERSTRIKE_PERSONA = "hacker"
-    }
-} elseif (-not $env:CYBERSTRIKE_PERSONA) {
-    $env:CYBERSTRIKE_PERSONA = "hacker"
-}
+# Persona selection (menu removed): an explicit -Persona wins; every other
+# launch is automatic hacker — no Read-Host, no choices, no prompt. The old
+# 1/2 persona menu was deleted on operator order ("automatic hacker agent").
+$env:CYBERSTRIKE_PERSONA = if ($Persona) { $Persona } else { "hacker" }
 
 $isHacker = $env:CYBERSTRIKE_PERSONA -eq "hacker"
 

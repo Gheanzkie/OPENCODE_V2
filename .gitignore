@@ -1,6 +1,11 @@
 # dependencies / bulk
 node_modules/
 .opencode/node_modules/
+# ...except the portable runtime's own npm/corepack inside offline\nodejs -
+# without them the bundled node.exe has no package manager and the offline
+# installer cannot run npm at all on a machine with no system node.
+!offline/nodejs/node_modules/
+!offline/nodejs/node_modules/**
 
 # account tokens — never commit
 antigravity-accounts.json
